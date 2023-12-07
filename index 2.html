@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        body {
+            background-image: url(bg.png);
+            background-size: cover;
+            background-attachment: fixed;
+            margin: 0;
+        }
+        #intro {
+            text-align: center;
+            margin-top: 50vh;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%);
+        }
+        .ex {height: 50px; width: auto;}
+        .instr {line-height: 1.5;}
+
+        .do {
+            text-align: center;
+            margin: 50px;
+            margin-top: 130px;
+        }
+
+        #intro {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        #display {
+            text-align: center;
+            justify-content: center;
+            margin-top: 100px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #words {
+            justify-content: center;
+            text-align: center;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            width: 800px;
+            height: 550px;
+            border-radius: 6px;
+            border: 2px solid #888888;
+            font-size: 1.2rem;
+            margin: 0 auto;
+        }
+
+        span {
+            padding: 20px;
+            border-radius: 4px;
+            display: inline-block;
+            width: calc(100% / 6 - 10);
+        }
+
+        #inputField {
+            padding: 5px;
+            height: 20px;
+            width: 150px;
+            margin-top: 50px;
+            text-align: center;
+            align-items: center;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        #timer {
+            margin-top: 10px;
+        }
+
+        #imageButton {
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        #timerBar {
+            height: 20px;
+            background-color: #7e69c1; 
+            margin-top: 10px;
+            width: 100%; 
+            direction: ltr;
+        }
+
+        .time {width: 800px;
+            margin-left: auto; 
+            margin-right: auto;}
+    </style>
+    <title>랜덤 단어와 색상 선택</title>
+    <audio id="backgroundMusic" loop>
+        <source src="mu.mp3" type="audio/mp3">
+    </audio>
+</head>
+<body>
+    <div id="intro">
+        <img class="ex" src="ex.png" >
+        <p class="instr">스트루프 테스트는 글자의 색을 입력하면 되는 게임이에요.<br> 예를 들어 글자가 '초록'이어도 색이 파란색이면 '파랑'이라고 입력하면 돼요!<br>준비가 되면 아래 버튼을 눌러주세요. </p>
+        <button id="imageButton" onclick="startGame()">게임 시작하기</button>
+    </div>
+
+    <div id="display">
+        <h1 class="do">글자의 색을 적으세요!</h1>
+        <div id="words"></div>
+        <input type="text" id="inputField" placeholder="색상을 입력하세요">
+        <div id="result"></div>
+    </div>
+    <div class="time">
+        <div id="timer"></div>
+        <div id="timerBar"></div>
+    </div>
+
+<script charset="UTF-8">
+    function startGame() {
+    var intro = document.getElementById("intro");
+    var display = document.getElementById("display");
+
+    intro.style.display = "none";
+
+    display.style.display = "flex";
+
+    var count = 30;
+    var counter = setInterval(timer, 1000);
+
+    var words = ["빨강", "노랑", "파랑", "초록"];
+    var colors = ["red", "orange", "blue", "green"];
+    var totalCombinations = 42;
+    var generatedCombinations = 0;
+
+    var wordDiv = document.getElementById("words");
+    var inputField = document.getElementById("inputField");
+    var resultDiv = document.getElementById("result");
+    var timerDiv = document.getElementById("timer");
+
+    var correctCount = 0;
+    var combinationColors = [];
+    var colorIndex = 0;
+
+    while (generatedCombinations < totalCombinations) {
+        var randomWordIndex = Math.floor(Math.random() * words.length);
+        var randomColorIndex = Math.floor(Math.random() * colors.length);
+
+        var selectedWord = words[randomWordIndex];
+        var selectedColor = colors[randomColorIndex];
+
+        combinationColors.push(selectedColor);
+
+        var span = document.createElement("span");
+        span.style.color = selectedColor;
+        span.textContent = selectedWord;
+        wordDiv.appendChild(span);
+
+        generatedCombinations++;
+    }
+
+    function updateTimerBar() {
+    var timerBar = document.getElementById("timerBar");
+    var remainingPercentage = (count / 30) * 100; 
+
+    timerBar.style.width = remainingPercentage + "%";
+    if (!isMusicPlaying) {
+                backgroundMusic.play();
+                isMusicPlaying = true;
+            }
+        }
+
+
+    function timer() {
+        count--;
+
+        if (count <= 0) {
+            clearInterval(counter);
+            resultDiv.textContent += `\n30초가 지났습니다. 최종 결과: ${correctCount}개를 맞추었습니다.`;
+            backgroundMusic.pause();
+            isMusicPlaying = false;
+        } else {
+            timerDiv.textContent = `${count}초`;
+            updateTimerBar();
+        }
+    }
+
+    inputField.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            var inputValue = inputField.value.trim().toLowerCase();
+            var selectedColor = combinationColors[colorIndex];
+
+            if (inputValue && (inputValue === selectedColor || inputValue === '빨강')) {
+                resultDiv.textContent = (`${colorIndex + 1}번째 정답!`);
+                correctCount++;
+            } else {
+                resultDiv.textContent = (`${colorIndex + 1}번째 오답..`);
+            }
+
+            inputField.value = "";
+            colorIndex++;
+
+            if (colorIndex === totalCombinations) {
+                clearInterval(counter);
+                resultDiv.textContent += `\n모든 입력이 완료되었습니다. 최종 결과: ${correctCount}개를 맞추었습니다.`;
+            }
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

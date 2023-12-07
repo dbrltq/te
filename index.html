@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background-image: url(bg.jpg);
+      background-size: cover;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    @keyframes floatAnimation {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+    .triangle-button {
+      color: white;
+    }
+    .image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    order: 1;
+  }
+
+    .hi2 {
+      width: 400px;
+      height: auto;
+      margin-top: 50px;
+      order: 1;
+      animation: floatAnimation 1.5s infinite;
+    }
+
+    .hi3 {
+      height: 100px;
+      width: auto;
+      margin-top: 200px;
+    }
+
+    .hidden {
+      opacity: 0;
+      display: none;
+    }
+
+    .typing-text {
+      color: white;
+      font-size: 1.2rem;
+      text-align: center;
+      white-space: pre-line;
+      overflow: hidden;
+      margin-bottom: 10px;
+      line-height: 1.5;
+      order: 2;
+    }
+
+    .input {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-top: 10px;
+      order: 3;
+    }
+
+    #nicknameInput {
+      text-align: center;
+      padding: 5px;
+    }
+
+    #submitButton {
+      margin-left: 10px;
+    }
+    #startGameButton {
+  margin-top: 20px;
+}
+  </style>
+  <title>Text Animation</title>
+</head>
+<body>
+  <div class="typing-text" id="hi">안녕하세요! 당신의 이름을 알려주세요.</div>
+
+  <div class="input">
+    <input type="text" id="nicknameInput" placeholder="">
+    <button id="submitButton" onclick="submitNickname()">완료</button>
+  </div>
+  <div class="image-container">
+    <div class="typing-text hidden" id="newText"></div>
+    <img class="hi2 hidden" src="호두.png" alt="New Image">
+    <img class="hi3 hidden" src="스트루프.png" alt="New Image 2">
+  </div>
+
+  <div class="triangle-button" onclick="showAdditionalText()">▶</div> 
+
+  <!-- HTML body 맨 아래에 추가하세요 -->
+<button id="startGameButton" class="hidden" onclick="startGame()">게임시작</button>
+
+  <script type="text/javascript">
+    function typeText(element, text, speed, callback) {
+      var index = 0;
+
+      function type() {
+        if (index < text.length) {
+          element.innerHTML += text.charAt(index);
+          index++;
+          setTimeout(type, speed);
+        } else {
+          if (callback) {
+            callback();
+          }
+        }
+      }
+
+      element.innerHTML = '';
+      type();
+    }
+
+    typeText(document.getElementById('hi'), "안녕하세요! 당신의 이름을 알려주세요.", 50);
+
+    function submitNickname() {
+      var nickname = document.getElementById('nicknameInput').value;
+      alert(nickname + "님 안녕하세요!");
+
+      document.getElementById('hi').classList.add('hidden');
+      document.getElementById('nicknameInput').classList.add('hidden');
+      document.getElementById('submitButton').classList.add('hidden');
+
+      var newTextElement = document.getElementById('newText');
+      newTextElement.classList.remove('hidden');
+      typeText(newTextElement, "여기는 딱딱해진 뇌를 말랑하게 해주는 곳이에요. 요즘에 스마트기기의 사용이 늘어나면서 \n현대인의 뇌가 딱딱해지고 있어요. 대부분의 현대인들은 스마트기기에 대한 의존도가\n 높아 뇌를 잘 사용하지 않고 있어요. 딱딱한 호두가 되어버린 우리의 뇌를 말랑하게 \n만들어볼까요?", 50);
+
+      document.body.style.backgroundImage = "url(back.jpg)"
+      document.querySelector('.hi2').classList.remove('hidden');
+    }
+
+    var triangleButtonClicked = false; 
+
+    function showAdditionalText() {
+      var newTextElement = document.getElementById('newText');
+      var hi2Image = document.querySelector('.hi2');
+      var hi3Image = document.querySelector('.hi3');
+
+      if (!triangleButtonClicked) {
+        newTextElement.innerHTML = "";
+        typeText(newTextElement, "말랑하게 뇌를 만들기 위해 테스트를 진행할거예요!\n 그럼 첫번째로 스트루프 테스트를 해보러 가볼까요?", 50);
+
+        document.body.style.backgroundImage = "url(back.jpg)";
+
+        triangleButtonClicked = true;
+
+        startGameButton.classList.remove('hidden');
+
+      }
+    }
+      function startGame() {
+   window.location.href = 'index 2.html'; 
+  }
+  </script>
+</body>
+</html>
